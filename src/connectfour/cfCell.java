@@ -12,7 +12,7 @@ package connectfour;
 public class cfCell {
 
 	/** A char to represent which player selected the cell. */
-	private char player;
+	private Player player;
 	
 	/** Boolean to mark whether or not the cell has been selected. */
 	private boolean isMarked;
@@ -26,7 +26,7 @@ public class cfCell {
 	 * 
 	 */
 	public cfCell() {
-		player = '?';
+		player = Player.NONE;
 		isMarked = false;
 		rating = 0;
 	}
@@ -36,9 +36,9 @@ public class cfCell {
 	 * 
 	 * @return char The player who currently has the cell selected
 	 */
-	public char getPlayer() {
-		return player;
-	}
+//	public char getPlayer() {
+//		return player;
+//	}
 
 	/**
 	 * Setter method that sets the player of a cell.
@@ -46,7 +46,7 @@ public class cfCell {
 	 * @param player
 	 *            The player that is going to be owner of that cell
 	 */
-	public void setPlayer(final char player) {
+	public void setPlayer(final Player player) {
 		this.player = player;
 	}
 
