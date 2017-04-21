@@ -29,11 +29,17 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private JPanel center;
 
 	private ImageIcon redCircle = new ImageIcon("src/redCircle.png");
+	
+	private ImageIcon redCircleMini = new ImageIcon("src/redCircleMini.png");
 
 	private ImageIcon blueCircle = new ImageIcon("src/blueCircle.png");
+	
+	private ImageIcon blueCircleMini = new ImageIcon("src/blueCircleMini.png");
 
 	private ImageIcon blackCircle = new ImageIcon("src/blackCircle.png");
-
+	
+	private ImageIcon exclamationPoint = new ImageIcon("src/exclamationPoint.png");
+	
 	public ConnectFourGUI() {
 		game = new ConnectFourGame();
 		int row = game.getDEFAULT_ROW();
@@ -87,13 +93,16 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		displayBoard();
 		
 		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.BLUE) {
-			JOptionPane.showMessageDialog(null, "Red Wins!");
+			JOptionPane.showMessageDialog(null, "Red Wins!", "Red", 
+					JOptionPane.INFORMATION_MESSAGE, redCircleMini);
 		}
 		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.RED) {
-			JOptionPane.showMessageDialog(null, "Blue Wins!");
+			JOptionPane.showMessageDialog(null, "Blue Wins!", "Blue", 
+					JOptionPane.INFORMATION_MESSAGE, blueCircleMini);
 		}
 		if (game.getGameStatus() == GameStatus.NotOverYet && game.checkTie()) {
-			JOptionPane.showMessageDialog(null, "It's a tie!");
+			JOptionPane.showMessageDialog(null, "It's a tie!", "Tie", 
+					JOptionPane.INFORMATION_MESSAGE, exclamationPoint);
 		}
 	}
 }

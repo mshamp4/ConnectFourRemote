@@ -22,6 +22,7 @@ public class ConnectFourGame {
 	
 	private final int CONNECT_FOUR = 4;
 
+	// havent used this yet
 	private int rating;
 
 	public ConnectFourGame() {
@@ -65,10 +66,9 @@ public class ConnectFourGame {
 	private boolean checkHorizontal(final Player player) {
 		int count;
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
-			count = 1;
+			count = 0;
 			for (int col = 0; col < getDEFAULT_COL(); col++) {
-				if (getCell(row, col).getPlayer() == player && getCell(row, col + 1) != null &&
-						getCell(row, col + 1).getPlayer() == player) {
+				if (getCell(row, col).getPlayer() == player) {
 					count++;
 				} else {
 					count = 0;
@@ -88,6 +88,8 @@ public class ConnectFourGame {
 			for (int row = 0; row < getDEFAULT_ROW(); row++) {
 				if (getCell(row, col).getPlayer() == player) {
 					count++;
+				} else {
+					count = 0;
 				}
 				if (count == getCONNECT_FOUR()) {
 					return true;
