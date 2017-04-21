@@ -110,6 +110,7 @@ public class ConnectFour {
 		menuAI = new JMenuItem("AI");
 		menuAI.addActionListener(new MenuActionListener());
 		menuNewGame.add(menuAI);
+		menuAI.setEnabled(false);
 
 		menuPlayer = new JMenuItem("Player");
 		menuPlayer.addActionListener(new MenuActionListener());
