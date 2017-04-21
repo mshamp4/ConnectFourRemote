@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-//import javax.swing.JOptionPane;
 
 public class ConnectFour {
 	
@@ -19,7 +18,7 @@ public class ConnectFour {
 	/** An item in the menu to exit the game. */
 	private static JMenuItem menuExit;
 	
-	/** A menu in the menu to select the opponent to a player or AI. */
+	/** A menu on the main menu to select the opponent to a player or AI. */
 	private static JMenu menuNewGame;
 	
 	/** Switch the opponent to AI. */
@@ -34,6 +33,11 @@ public class ConnectFour {
 	/** A JFrame to add elements to. */
 	private static JFrame frame;
 	
+	/**
+	 * Main method that creates a JFrame and adds an instance 
+	 * of the ConnectFourGUI to it and sets up the rest of the game.
+	 * 
+	 */
 	public static void main(final String[] args) {
 		board = new ConnectFourGUI();
 		frame = new JFrame("Connect Four");

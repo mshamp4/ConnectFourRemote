@@ -32,7 +32,7 @@ public class cfCell {
 	}
 
 	/**
-	 * Getter method that returns the player that selected that cell.
+	 * Getter method that returns which player selected that cell.
 	 * 
 	 * @return char The player who currently has the cell selected
 	 */
@@ -81,12 +81,12 @@ public class cfCell {
 	}
 
 	/**
-	 * Setter method that adds one to the rating.
+	 * Setter method that sets the rating of a move.
 	 * 
 	 * @param rating
 	 *            The current rating of that cell
 	 */
 	public void setRating(final int rating) {
-		this.rating += rating;
+		this.rating = rating;
 	}
 }
