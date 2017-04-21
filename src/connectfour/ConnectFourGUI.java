@@ -28,7 +28,8 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -2516162043977233740L;
 
 	/**
-	 * A 2D array of JButtons that represent each cell of a connect four game.
+	 * A 2D array of JButtons that represent each cell 
+	 * of a connect four game.
 	 */
 	private JButton[][] board;
 

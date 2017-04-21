@@ -10,28 +10,25 @@ package connectfour;
  */
 public class ConnectFourGame {
 
-	/** A 2D array full of connect four nodes. */
+	/** A 2D array full of connect four cells. */
 	private cfCell[][] board;
 
 	/** Current status of the game. */
 	private GameStatus gameStatus;
 
-	/**
-	 * Used to keep track of the current turn of the game and to have ownership
-	 * of selected cells.
-	 */
+	/** Used to keep track of the current turn of the game. */
 	private Player player;
 
-	/** Default row size of a connect four board. */
+	/** Default row of a connect four board. */
 	private final int DEFAULT_ROW = 6;
 
-	/** Default column size of a connect four board. */
+	/** Default column of a connect four board. */
 	private final int DEFAULT_COL = 7;
 
 	/** Winning condition is to get 4 in a row. */
 	private final int CONNECT_FOUR = 4;
 
-	/** An integer used to by the AI to represent how good a move is. */
+	/** An integer used by the AI to represent how good a move is. */
 	private int rating;
 
 	/**
@@ -47,8 +44,8 @@ public class ConnectFourGame {
 	}
 
 	/**
-	 * Helper method that creates individual cells for the Connect Four game
-	 * board.
+	 * Helper method that creates individual default cells for the ConnectFour
+	 * game board.
 	 * 
 	 */
 	private void initialize() {
@@ -257,7 +254,7 @@ public class ConnectFourGame {
 
 	/**
 	 * Helper method that checks to see if the top row of the game board has
-	 * been filled completely and that there are no more a available moves to
+	 * been filled completely and that there are no more available moves to
 	 * make.
 	 * 
 	 * @return boolean Checks to see if there is a tie or not
