@@ -2,14 +2,14 @@ package connectfour;
 
 /**
  * This class holds the properties of a connect four circle. This is the Model
- * of the MVC design. The properties of this model include: which player controls 
- * the cell, whether or not the cell has been clicked on, and the rating of 
- * the cell that is used to assist the logic of the AI.
+ * of the MVC design. The properties of this model include: which player
+ * controls the cell, whether or not the cell has been clicked on, and the
+ * rating of the cell that is used to assist the logic of the AI.
  * 
  * @author Matthew Shampine
  * @version 1.0
  */
-public class cfCell {
+public class CfCell {
 
 	/** A Player enum to represent which player selected the cell. */
 	private Player player;
@@ -25,7 +25,7 @@ public class cfCell {
 	 * default properties.
 	 * 
 	 */
-	public cfCell() {
+	public CfCell() {
 		player = Player.NONE;
 		isMarked = false;
 		rating = 0;
@@ -70,8 +70,8 @@ public class cfCell {
 	}
 
 	/**
-	 * Getter method that returns the rating of a cell. The higher rating a cell
-	 * has the better the move is.
+	 * Getter method that returns the rating of a cell. The higher rating
+	 * a cell a has the better the move is.
 	 * 
 	 * @return int The rating of a cell
 	 */

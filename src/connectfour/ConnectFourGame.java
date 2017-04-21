@@ -11,7 +11,7 @@ package connectfour;
 public class ConnectFourGame {
 
 	/** A 2D array full of connect four cells. */
-	private cfCell[][] board;
+	private CfCell[][] board;
 
 	/** Current status of the game. */
 	private GameStatus gameStatus;
@@ -19,6 +19,7 @@ public class ConnectFourGame {
 	/** Used to keep track of the current turn of the game. */
 	private Player player;
 
+	// CHECKSTYLE:OFF
 	/** Default row of a connect four board. */
 	private final int DEFAULT_ROW = 6;
 
@@ -27,41 +28,42 @@ public class ConnectFourGame {
 
 	/** Winning condition is to get 4 in a row. */
 	private final int CONNECT_FOUR = 4;
-
-	/** An integer used by the AI to represent how good a move is. */
-	private int rating;
+	// CHECKSTYLE:ON
+	
+//	/** An integer used by the AI to represent how good a move is. */
+//	private int rating;
 
 	/**
-	 * Constructor that instantiates a new game by setting all of the default
-	 * values and by setting the first player's turn to blue.
+	 * Constructor that instantiates a new game by setting all of the
+	 * default values and by setting the first player's turn to blue.
 	 * 
 	 */
 	public ConnectFourGame() {
 		setGameStatus(GameStatus.NotOverYet);
 		setPlayer(Player.BLUE);
-		board = new cfCell[DEFAULT_ROW][DEFAULT_COL];
+		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 	}
 
 	/**
-	 * Helper method that creates individual default cells for the ConnectFour
-	 * game board.
+	 * Helper method that creates individual default cells for the
+	 * ConnectFour game board.
 	 * 
 	 */
 	private void initialize() {
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < getDEFAULT_COL(); col++) {
-				board[row][col] = new cfCell();
+				board[row][col] = new CfCell();
 			}
 		}
 	}
 
 	/**
 	 * Helper method that controls the logic when a user clicks on a connect
-	 * four Cell. This method automatically selects the lowest row in a column
-	 * of cells and checks the game status to see if there is a winner. In
-	 * addition to this it also changes the turn of the player on a successful
-	 * move and also checks for invalid moves.
+	 * four Cell. This method automatically selects the lowest row in a
+	 * column of cells and checks the game status to see if there is a
+	 * winner. In addition to this it also changes the turn of the player
+	 * on a successful move and also checks for invalid moves.
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -69,13 +71,15 @@ public class ConnectFourGame {
 	 *            The column of the cell that was selected
 	 * @param player
 	 *            Who the current player is
-	 * @return int Whether or not the move that is being made is valid or not
+	 * @return int Whether or not the move that is being made is valid or
+	 * 			   not
 	 */
-	public int selectcfCell(int row, final int col, final Player player) {
+	public int selectCfCell(int row, final int col, final Player player) {
 		if (getCell(row, col) == null || getCell(row, col).isMarked()) {
 			return -1;
 		}
-		while (getCell(row, col) != null && !getCell(row, col).isMarked()) {
+		while (getCell(row, col) != null && !getCell(row, col).
+				isMarked()) {
 			row++;
 		}
 		board[row - 1][col].setMarked(true);
@@ -90,9 +94,9 @@ public class ConnectFourGame {
 	}
 
 	/**
-	 * Helper method that checks the game board every time a new cell is added.
-	 * This method checks for all of the win conditions including horizontal,
-	 * vertical and both directions of diagonals.
+	 * Helper method that checks the game board every time a new cell is
+	 * added. This method checks for all of the win conditions including
+	 * horizontal, vertical and both directions of diagonals.
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -102,14 +106,17 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	public boolean checkStatus(final int row, final int col, final Player player) {
-		return (checkHorizontal(row, player) || checkVertical(col, player) || checkDiagonal(row, col, player));
+	public boolean checkStatus(final int row, final int col, final 
+			Player player) {
+		return (checkHorizontal(row, player)
+				|| checkVertical(col, player)
+				|| checkDiagonal(row, col, player));
 	}
 
 	/**
-	 * Helper method that checks how many consecutive cells of a single player
-	 * there are horizontally. The winning condition is met if there is enough
-	 * consecutive cells to equal getCONNECT_FOUR().
+	 * Helper method that checks how many consecutive cells of a single
+	 * player there are horizontally. The winning condition is met if
+	 * there is enough consecutive cells to equal getCONNECT_FOUR().
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -133,9 +140,9 @@ public class ConnectFourGame {
 	}
 
 	/**
-	 * Helper method that checks how many consecutive cells of a single player
-	 * there are vertically. The winning condition is met if there is enough
-	 * consecutive cells to equal getCONNECT_FOUR().
+	 * Helper method that checks how many consecutive cells of a single
+	 * player there are vertically. The winning condition is met if
+	 * there is enough consecutive cells to equal getCONNECT_FOUR().
 	 * 
 	 * @param col
 	 *            The column of the cell that was selected
@@ -160,9 +167,9 @@ public class ConnectFourGame {
 
 	/**
 	 * Helper method that checks the diagonals of a connect four game board.
-	 * This method could probably be optimized a little because it contains four
-	 * separate loops to find both the forward and backward diagonals of a game
-	 * board.
+	 * This method could probably be optimized a little because it contains
+	 * four separate loops to find both the forward and backward diagonals
+	 * of a game board.
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -172,14 +179,17 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkDiagonal(final int row, final int col, Player player) {
-		return (checkForwardDiagonal(row, col, player) || checkBackwardDiagonal(row, col, player));
+	private boolean checkDiagonal(final int row, final int col,
+			final Player player) {
+		return (checkForwardDiagonal(row, col, player)
+				|| checkBackwardDiagonal(row, col, player));
 	}
 
 	/**
-	 * Helper method that contains the logic to find how many consecutive cells
-	 * of a single player there are diagonally forward. The winning condition is
-	 * met if there is enough consecutive cells to equal getCONNECT_FOUR().
+	 * Helper method that contains the logic to find how many consecutive
+	 * cells of a single player there are diagonally forward. The winning
+	 * condition is met if there is enough consecutive cells to equal 
+	 * getCONNECT_FOUR().
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -189,13 +199,16 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkForwardDiagonal(final int row, final int col, Player player) {
+	private boolean checkForwardDiagonal(final int row, final int col,
+			final Player player) {
 		int forwardCount = 0;
 		int rUpValue = row;
 		int cUpValue = col;
 		int rDownValue = row + 1;
 		int cDownValue = col - 1;
-		while (getCell(rUpValue, cUpValue) != null && getCell(rUpValue, cUpValue).getPlayer() == player) {
+		while (getCell(rUpValue, cUpValue) != null
+				&& getCell(rUpValue, cUpValue).getPlayer() 
+				== player) {
 			forwardCount++;
 			rUpValue--;
 			cUpValue++;
@@ -203,7 +216,9 @@ public class ConnectFourGame {
 				return true;
 			}
 		}
-		while (getCell(rDownValue, cDownValue) != null && getCell(rDownValue, cDownValue).getPlayer() == player) {
+		while (getCell(rDownValue, cDownValue) != null
+				&& getCell(rDownValue, cDownValue).getPlayer() 
+				== player) {
 			forwardCount++;
 			rDownValue++;
 			cDownValue--;
@@ -215,9 +230,10 @@ public class ConnectFourGame {
 	}
 
 	/**
-	 * Helper method that contains the logic to find how many consecutive cells
-	 * of a single player there are diagonally backward. The winning condition
-	 * is met if there is enough consecutive cells to equal getCONNECT_FOUR().
+	 * Helper method that contains the logic to find how many consecutive
+	 * cells of a single player there are diagonally backward. The
+	 * winning condition is met if there is enough consecutive cells to
+	 * equal getCONNECT_FOUR().
 	 * 
 	 * @param row
 	 *            The row of the cell that was selected
@@ -227,13 +243,16 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkBackwardDiagonal(final int row, final int col, Player player) {
+	private boolean checkBackwardDiagonal(final int row, final int col,
+			final Player player) {
 		int backwardCount = 0;
 		int rUpValue = row;
 		int cUpValue = col;
 		int rDownValue = row + 1;
 		int cDownValue = col + 1;
-		while (getCell(rUpValue, cUpValue) != null && getCell(rUpValue, cUpValue).getPlayer() == player) {
+		while (getCell(rUpValue, cUpValue) != null
+				&& getCell(rUpValue, cUpValue).getPlayer() 
+				== player) {
 			backwardCount++;
 			rUpValue--;
 			cUpValue--;
@@ -241,7 +260,9 @@ public class ConnectFourGame {
 				return true;
 			}
 		}
-		while (getCell(rDownValue, cDownValue) != null && getCell(rDownValue, cDownValue).getPlayer() == player) {
+		while (getCell(rDownValue, cDownValue) != null
+				&& getCell(rDownValue, cDownValue).getPlayer()
+				== player) {
 			backwardCount++;
 			rDownValue++;
 			cDownValue++;
@@ -276,11 +297,13 @@ public class ConnectFourGame {
 	 *            The row of the cell that was selected
 	 * @param col
 	 *            The column of the cell that was selected
-	 * @return cfCell Returns the cfCell if it is valid and does not exceed the
-	 *         bounds of the game board.
+	 * @return CfCell Returns the CfCell if it is valid and does not exceed
+	 * 		   the bounds of the game board.
 	 */
-	public cfCell getCell(final int row, final int col) {
-		return (row < 0 || col < 0 || row >= getDEFAULT_ROW() || col >= getDEFAULT_COL()) ? null : board[row][col];
+	public CfCell getCell(final int row, final int col) {
+		return (row < 0 || col < 0 || row >= getDEFAULT_ROW()
+				|| col >= getDEFAULT_COL())
+				? null : board[row][col];
 	}
 
 	/**
@@ -295,10 +318,10 @@ public class ConnectFourGame {
 	/**
 	 * Setter method that sets the current state of the game.
 	 * 
-	 * @param GameStatus
+	 * @param gameStatus
 	 *            The current playing state of the game
 	 */
-	private void setGameStatus(GameStatus gameStatus) {
+	private void setGameStatus(final GameStatus gameStatus) {
 		this.gameStatus = gameStatus;
 	}
 
@@ -314,32 +337,33 @@ public class ConnectFourGame {
 	/**
 	 * Setter method that sets the current player of the game.
 	 * 
-	 * @param Player
+	 * @param player
 	 *            Which players turn it is
 	 */
-	private void setPlayer(Player player) {
+	private void setPlayer(final Player player) {
 		this.player = player;
 	}
 
-	/**
-	 * Getter method that gets the rating of a particular game cell.
-	 * 
-	 * @return int The rating of the current cell being requested
-	 */
-	private int getRating() {
-		return rating;
-	}
+//	/**
+//	 * Getter method that gets the rating of a particular game cell.
+//	 * 
+//	 * @return int The rating of the current cell being requested
+//	 */
+//	private int getRating() {
+//		return rating;
+//	}
+//
+//	/**
+//	 * Setter method that sets the rating of a particular game cell.
+//	 * 
+//	 * @param rating
+//	 *            The rating of the cell
+//	 */
+//	private void setRating(final int rating) {
+//		this.rating = rating;
+//	}
 
-	/**
-	 * Setter method that sets the rating of a particular game cell.
-	 * 
-	 * @param rating
-	 *            The rating of the cell
-	 */
-	private void setRating(int rating) {
-		this.rating = rating;
-	}
-
+	// CHECKSTYLE:OFF
 	/**
 	 * Getter method that gets the default row of the game board.
 	 * 
@@ -359,14 +383,15 @@ public class ConnectFourGame {
 	}
 
 	/**
-	 * Getter method that gets how many consecutive cells there must be in order
-	 * for the winning condition to be met. In standard connect four this value
-	 * is set to four consecutive cells of the same player.
+	 * Getter method that gets how many consecutive cells there must be in
+	 * order for the winning condition to be met. In standard connect four
+	 * this value is set to four consecutive cells of the same player.
 	 * 
-	 * @return int The default number of consecutive cells of the same player to
-	 *         win the game
+	 * @return int The default number of consecutive cells of the same
+	 * 			   player to win the game
 	 */
 	public int getCONNECT_FOUR() {
 		return CONNECT_FOUR;
 	}
+	// CHECKSTYLE:ON
 }

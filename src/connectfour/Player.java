@@ -8,7 +8,24 @@ package connectfour;
  * @version 1.0
  */
 public enum Player {
-	BLUE, RED, NONE;
+	
+	/**
+	 * Blue player.
+	 * 
+	 */
+	BLUE,
+	
+	/**
+	 * Red player.
+	 * 
+	 */
+	RED, 
+	
+	/**
+	 * There is no owner of a particular cell.
+	 * 
+	 */
+	NONE;
 
 	/**
 	 * This method changes the turn of the player depending on whose turn it

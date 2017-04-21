@@ -7,36 +7,47 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+/**
+ * This class creates a JFrame to add the ConnectFourGUI to it and provides
+ * different options as well like exiting the game, and the option of creating a
+ * new game with a player or AI.
+ * 
+ * @author Matthew Shampine
+ * @version 1.0
+ */
 public class ConnectFour {
-	
+
 	/** Creates a menu at the top of the GUI. */
 	private static JMenuBar menuBar;
-	
+
 	/** For a tab 'menu' in menuBar. */
 	private static JMenu menu;
-	
+
 	/** An item in the menu to exit the game. */
 	private static JMenuItem menuExit;
-	
+
 	/** A menu on the main menu to select the opponent to a player or AI. */
 	private static JMenu menuNewGame;
-	
+
 	/** Switch the opponent to AI. */
 	private static JMenuItem menuAI;
-	
+
 	/** Switch the opponent to player. */
 	private static JMenuItem menuPlayer;
-	
+
 	/** For a ConnectFourGUI that holds the buttons for the game. */
 	private static ConnectFourGUI board;
 
 	/** A JFrame to add elements to. */
 	private static JFrame frame;
-	
+
 	/**
-	 * Main method that creates a JFrame and adds an instance 
-	 * of the ConnectFourGUI to it and sets up the rest of the game.
+	 * Main method that creates a JFrame and adds an instance of the
+	 * ConnectFourGUI to it and sets up the rest of the game.
 	 * 
+	 * @param args
+	 *            Arguments that are passed through the main method these
+	 *            aren't used
 	 */
 	public static void main(final String[] args) {
 		board = new ConnectFourGUI();

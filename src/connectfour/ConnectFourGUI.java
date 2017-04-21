@@ -36,8 +36,8 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	/** An instance of the ConnectFourGame class. */
 	private ConnectFourGame game;
 
-	/** A cfCell that stores information of one connect four cell. */
-	private cfCell iCell;
+	/** A CfCell that stores information of one connect four cell. */
+	private CfCell iCell;
 
 	/** A JPanel to add all of the buttons onto. */
 	private JPanel center;
@@ -46,13 +46,15 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private ImageIcon redCircle = new ImageIcon("src/redCircle.png");
 
 	/** Icon that is used when the red player wins the game. */
-	private ImageIcon redCircleMini = new ImageIcon("src/redCircleMini.png");
+	private ImageIcon redCircleMini = new 
+			ImageIcon("src/redCircleMini.png");
 
 	/** Icon to represent blue players moves. */
 	private ImageIcon blueCircle = new ImageIcon("src/blueCircle.png");
 
 	/** Icon that is used when the blue player wins the game. */
-	private ImageIcon blueCircleMini = new ImageIcon("src/blueCircleMini.png");
+	private ImageIcon blueCircleMini = new 
+			ImageIcon("src/blueCircleMini.png");
 
 	/**
 	 * Default icon that is used at the start of the game to signify a blank
@@ -61,12 +63,13 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private ImageIcon blackCircle = new ImageIcon("src/blackCircle.png");
 
 	/** Icon that is used when both red and blue players tie. */
-	private ImageIcon exclamationPoint = new ImageIcon("src/exclamationPoint.png");
+	private ImageIcon exclamationPoint = new 
+			ImageIcon("src/exclamationPoint.png");
 
 	/**
-	 * Constructor that instantiates a new game ConnectFourGame, and sets up the
-	 * JButtons based off of the default board size found in the ConnectFourGame
-	 * class.
+	 * Constructor that instantiates a new game ConnectFourGame, and sets
+	 * up the JButtons based off of the default board size found in the
+	 * ConnectFourGame class.
 	 * 
 	 */
 	public ConnectFourGUI() {
@@ -82,18 +85,20 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * Helper method that creates each individual default JButton. This JButton
-	 * includes no border, and the icon on this button is a black circle
-	 * representing that no one is the owner of that cell.
+	 * Helper method that creates each individual default JButton. This
+	 * JButton includes no border, and the icon on this button is a
+	 * black circle representing that no one is the owner of that cell.
 	 * 
 	 */
 	private void createButtons() {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
 				board[row][col] = new JButton("");
-				board[row][col].setPreferredSize(new Dimension(100, 100));
+				board[row][col].setPreferredSize(
+						new Dimension(100, 100));
 				board[row][col].setBackground(Color.YELLOW);
-				board[row][col].setBorder(new EmptyBorder(0, 0, 0, 0));
+				board[row][col].setBorder(
+						new EmptyBorder(0, 0, 0, 0));
 				board[row][col].setIcon(blackCircle);
 				board[row][col].addActionListener(this);
 				center.add(board[row][col]);
@@ -110,10 +115,12 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
 				iCell = game.getCell(row, col);
-				if (iCell.isMarked() && iCell.getPlayer() == Player.BLUE) {
+				if (iCell.isMarked() && iCell.getPlayer()
+						== Player.BLUE) {
 					board[row][col].setIcon(blueCircle);
 				}
-				if (iCell.isMarked() && iCell.getPlayer() == Player.RED) {
+				if (iCell.isMarked() && iCell.getPlayer()
+						== Player.RED) {
 					board[row][col].setIcon(redCircle);
 				}
 			}
@@ -129,28 +136,40 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	 * and checks to see if there is a winner or a tie.
 	 * 
 	 * @param e
-	 *            The event that is triggered when the user clicks on a JButton
+	 *            The event that is triggered when the user clicks on a
+	 *            JButton
 	 * 
 	 */
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
-				if (e.getSource() == board[row][col] && game.getGameStatus() == GameStatus.NotOverYet) {
-					game.selectcfCell(row, col, game.getPlayer());
+				if (e.getSource() == board[row][col]
+						&& game.getGameStatus()
+						== GameStatus.NotOverYet) {
+					game.selectCfCell(row, col, 
+							game.getPlayer());
 				}
 			}
 		}
 
 		displayBoard();
 
-		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.BLUE) {
-			JOptionPane.showMessageDialog(null, "Red Wins!", "Red", JOptionPane.INFORMATION_MESSAGE, redCircleMini);
+		if (game.getGameStatus() == GameStatus.Won && game.getPlayer()
+				== Player.BLUE) {
+			JOptionPane.showMessageDialog(null, "Red Wins!", "Red",
+					JOptionPane.INFORMATION_MESSAGE,
+					redCircleMini);
 		}
-		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.RED) {
-			JOptionPane.showMessageDialog(null, "Blue Wins!", "Blue", JOptionPane.INFORMATION_MESSAGE, blueCircleMini);
+		if (game.getGameStatus() == GameStatus.Won && game.getPlayer()
+				== Player.RED) {
+			JOptionPane.showMessageDialog(null, "Blue Wins!",
+					"Blue", JOptionPane.INFORMATION_MESSAGE,
+					blueCircleMini);
 		}
-		if (game.getGameStatus() == GameStatus.NotOverYet && game.checkTie()) {
-			JOptionPane.showMessageDialog(null, "It's a tie!", "Tie", JOptionPane.INFORMATION_MESSAGE,
+		if (game.getGameStatus() == GameStatus.NotOverYet
+				&& game.checkTie()) {
+			JOptionPane.showMessageDialog(null, "It's a tie!",
+					"Tie", JOptionPane.INFORMATION_MESSAGE,
 					exclamationPoint);
 		}
 	}
