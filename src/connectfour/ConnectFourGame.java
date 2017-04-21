@@ -19,7 +19,7 @@ public class ConnectFourGame {
 	private final int DEFAULT_ROW = 6;
 
 	private final int DEFAULT_COL = 7;
-	
+
 	private final int CONNECT_FOUR = 4;
 
 	// havent used this yet
@@ -47,9 +47,9 @@ public class ConnectFourGame {
 		while (getCell(row, col) != null && !getCell(row, col).isMarked()) {
 			row++;
 		}
-		board[row-1][col].setMarked(true);
-		board[row-1][col].setPlayer(player);
-		if (checkStatus(player)) {
+		board[row - 1][col].setMarked(true);
+		board[row - 1][col].setPlayer(player);
+		if (checkStatus(row - 1, col, player)) {
 			setGameStatus(GameStatus.Won);
 		} else {
 			setGameStatus(GameStatus.NotOverYet);
@@ -58,52 +58,94 @@ public class ConnectFourGame {
 		return 1;
 	}
 
-	public boolean checkStatus(final Player player) {
-		return (checkHorizontal(player) || checkVertical(player) ||
-				checkDiagonal(player));
+	public boolean checkStatus(final int row, final int col, final Player player) {
+		return (checkHorizontal(row, player) || checkVertical(col, player) || checkDiagonal(row, col, player));
 	}
 
-	private boolean checkHorizontal(final Player player) {
-		int count;
-		for (int row = 0; row < getDEFAULT_ROW(); row++) {
-			count = 0;
-			for (int col = 0; col < getDEFAULT_COL(); col++) {
-				if (getCell(row, col).getPlayer() == player) {
-					count++;
-				} else {
-					count = 0;
-				}
-				if (count == getCONNECT_FOUR()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean checkVertical(final Player player) {
-		int count;
+	private boolean checkHorizontal(final int row, final Player player) {
+		int count = 0;
 		for (int col = 0; col < getDEFAULT_COL(); col++) {
-			count = 0;
-			for (int row = 0; row < getDEFAULT_ROW(); row++) {
-				if (getCell(row, col).getPlayer() == player) {
-					count++;
-				} else {
-					count = 0;
-				}
-				if (count == getCONNECT_FOUR()) {
-					return true;
-				}
+			if (getCell(row, col).getPlayer() == player) {
+				count++;
+			} else {
+				count = 0;
+			}
+			if (count == getCONNECT_FOUR()) {
+				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean checkDiagonal(Player player) {
-		//TO-DO Diagonal logic
+	private boolean checkVertical(final int col, final Player player) {
+		int count = 0;
+		for (int row = 0; row < getDEFAULT_ROW(); row++) {
+			if (getCell(row, col).getPlayer() == player) {
+				count++;
+			} else {
+				count = 0;
+			}
+			if (count == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
 		return false;
 	}
-	
+
+	private boolean checkDiagonal(final int row, final int col, Player player) {
+		return (checkForwardDiagonal(row, col, player) || checkBackwardDiagonal(row, col, player));
+	}
+
+	private boolean checkForwardDiagonal(final int row, final int col, Player player) {
+		int forwardCount = 0;
+		int rUpValue = row;
+		int cUpValue = col;
+		int rDownValue = row + 1;
+		int cDownValue = col - 1;
+		while (getCell(rUpValue, cUpValue) != null && getCell(rUpValue, cUpValue).getPlayer() == player) {
+			forwardCount++;
+			rUpValue--;
+			cUpValue++;
+			if (forwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		while (getCell(rDownValue, cDownValue) != null && getCell(rDownValue, cDownValue).getPlayer() == player) {
+			forwardCount++;
+			rDownValue++;
+			cDownValue--;
+			if (forwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean checkBackwardDiagonal(final int row, final int col, Player player) {
+		int backwardCount = 0;
+		int rUpValue = row;
+		int cUpValue = col;
+		int rDownValue = row + 1;
+		int cDownValue = col + 1;
+		while (getCell(rUpValue, cUpValue) != null && getCell(rUpValue, cUpValue).getPlayer() == player) {
+			backwardCount++;
+			rUpValue--;
+			cUpValue--;
+			if (backwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		while (getCell(rDownValue, cDownValue) != null && getCell(rDownValue, cDownValue).getPlayer() == player) {
+			backwardCount++;
+			rDownValue++;
+			cDownValue++;
+			if (backwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean checkTie() {
 		int row = 0;
 		for (int col = 0; col < getDEFAULT_COL(); col++) {
@@ -118,15 +160,15 @@ public class ConnectFourGame {
 		return (row < 0 || col < 0 || row >= getDEFAULT_ROW() || col >= getDEFAULT_COL()) ? null : board[row][col];
 	}
 
-	// probably not going to use this method
-	private cfCell[][] getBoard() {
-		return board;
-	}
-
-	// probably not going to use this method either
-	private void setBoard(cfCell[][] board) {
-		this.board = board;
-	}
+	// // probably not going to use this method
+	// private cfCell[][] getBoard() {
+	// return board;
+	// }
+	//
+	// // probably not going to use this method either
+	// private void setBoard(cfCell[][] board) {
+	// this.board = board;
+	// }
 
 	public GameStatus getGameStatus() {
 		return gameStatus;
@@ -160,7 +202,7 @@ public class ConnectFourGame {
 	public int getDEFAULT_COL() {
 		return DEFAULT_COL;
 	}
-	
+
 	public int getCONNECT_FOUR() {
 		return CONNECT_FOUR;
 	}
