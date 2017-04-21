@@ -36,9 +36,9 @@ public class cfCell {
 	 * 
 	 * @return char The player who currently has the cell selected
 	 */
-//	public char getPlayer() {
-//		return player;
-//	}
+	public Player getPlayer() {
+		return player;
+	}
 
 	/**
 	 * Setter method that sets the player of a cell.
