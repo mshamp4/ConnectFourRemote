@@ -17,8 +17,8 @@ public class CfCell {
 	/** Boolean to mark whether or not the cell has been selected. */
 	private boolean isMarked;
 
-	/** An integer to represent how good of a move a cell is. */
-	private int rating;
+//	/** An integer to represent how good of a move a cell is. */
+//	private int rating;
 
 	/**
 	 * Constructor that instantiates a new cell and sets up the cell with
@@ -28,7 +28,7 @@ public class CfCell {
 	public CfCell() {
 		player = Player.NONE;
 		isMarked = false;
-		rating = 0;
+//		rating = 0;
 	}
 
 	/**
@@ -69,23 +69,23 @@ public class CfCell {
 		this.isMarked = isMarked;
 	}
 
-	/**
-	 * Getter method that returns the rating of a cell. The higher rating
-	 * a cell a has the better the move is.
-	 * 
-	 * @return int The rating of a cell
-	 */
-	public int getRating() {
-		return rating;
-	}
-
-	/**
-	 * Setter method that sets the rating of a move.
-	 * 
-	 * @param rating
-	 *            The current rating of that cell
-	 */
-	public void setRating(final int rating) {
-		this.rating = rating;
-	}
+//	/**
+//	 * Getter method that returns the rating of a cell. The higher rating
+//	 * a cell a has the better the move is.
+//	 * 
+//	 * @return int The rating of a cell
+//	 */
+//	public int getRating() {
+//		return rating;
+//	}
+//
+//	/**
+//	 * Setter method that sets the rating of a move.
+//	 * 
+//	 * @param rating
+//	 *            The current rating of that cell
+//	 */
+//	public void setRating(final int rating) {
+//		this.rating = rating;
+//	}
 }
