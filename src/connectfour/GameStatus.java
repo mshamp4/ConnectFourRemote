@@ -8,13 +8,7 @@ package connectfour;
  * @version 1.0
  */
 public enum GameStatus {
-	
-	/**
-	 * The current status if the user lost.
-	 * 
-	 */
-	Lost, 
-	
+		
 	/**
 	 * The current status if the user won.
 	 * 

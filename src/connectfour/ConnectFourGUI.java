@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -18,7 +19,7 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -2516162043977233740L;
-	
+
 	private JButton[][] board;
 
 	private ConnectFourGame game;
@@ -26,11 +27,11 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private cfCell iCell;
 
 	private JPanel center;
-	
+
 	private ImageIcon redCircle = new ImageIcon("src/redCircle.png");
-	
+
 	private ImageIcon blueCircle = new ImageIcon("src/blueCircle.png");
-	
+
 	private ImageIcon blackCircle = new ImageIcon("src/blackCircle.png");
 
 	public ConnectFourGUI() {
@@ -44,13 +45,12 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		add(center, BorderLayout.CENTER);
 		createButtons();
 	}
-	
+
 	private void createButtons() {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
 				board[row][col] = new JButton("");
-				board[row][col].setPreferredSize(
-						new Dimension(100, 100));
+				board[row][col].setPreferredSize(new Dimension(100, 100));
 				board[row][col].setBackground(Color.YELLOW);
 				board[row][col].setBorder(new EmptyBorder(0, 0, 0, 0));
 				board[row][col].setIcon(blackCircle);
@@ -59,18 +59,41 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
-	private void disableButtons() {
+
+	private void displayBoard() {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
-				board[row][col].setEnabled(false);
+				iCell = game.getCell(row, col);
+				if (iCell.isMarked() && iCell.getPlayer() == Player.BLUE) {
+					board[row][col].setIcon(blueCircle);
+				}
+				if (iCell.isMarked() && iCell.getPlayer() == Player.RED) {
+					board[row][col].setIcon(redCircle);
+				}
 			}
 		}
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-	}
+		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
+			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
+				if (e.getSource() == board[row][col] && game.getGameStatus() == GameStatus.NotOverYet) {
+					game.selectcfCell(row, col, game.getPlayer());
+					}
+				}
+			}
 
+		displayBoard();
+		
+		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.BLUE) {
+			JOptionPane.showMessageDialog(null, "Red Wins!");
+		}
+		if (game.getGameStatus() == GameStatus.Won && game.getPlayer() == Player.RED) {
+			JOptionPane.showMessageDialog(null, "Blue Wins!");
+		}
+		if (game.getGameStatus() == GameStatus.NotOverYet && game.checkTie()) {
+			JOptionPane.showMessageDialog(null, "It's a tie!");
+		}
+	}
 }

@@ -1,9 +1,9 @@
 package connectfour;
 
 public enum Player {
-	BLACK, RED, NONE;
+	BLUE, RED, NONE;
 
 	public Player next() {
-		return this == BLACK ? RED : BLACK;
+		return this == BLUE ? RED : BLUE;
 	}
 }

@@ -20,7 +20,7 @@ public class ConnectFour {
 	private static JMenuItem menuExit;
 	
 	/** A menu in the menu to select the opponent to a player or AI. */
-	private static JMenu menuOpponent;
+	private static JMenu menuNewGame;
 	
 	/** Switch the opponent to AI. */
 	private static JMenuItem menuAI;
@@ -88,17 +88,17 @@ public class ConnectFour {
 		menu = new JMenu("Options");
 		menuBar.add(menu);
 
-		menuOpponent = new JMenu("Opponent");
-		menuOpponent.addActionListener(new MenuActionListener());
-		menu.add(menuOpponent);
+		menuNewGame = new JMenu("New Game");
+		menuNewGame.addActionListener(new MenuActionListener());
+		menu.add(menuNewGame);
 
 		menuAI = new JMenuItem("AI");
 		menuAI.addActionListener(new MenuActionListener());
-		menuOpponent.add(menuAI);
+		menuNewGame.add(menuAI);
 
 		menuPlayer = new JMenuItem("Player");
 		menuPlayer.addActionListener(new MenuActionListener());
-		menuOpponent.add(menuPlayer);
+		menuNewGame.add(menuPlayer);
 
 		menu.addSeparator();
 		menuExit = new JMenuItem("Exit");

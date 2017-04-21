@@ -26,7 +26,7 @@ public class ConnectFourGame {
 
 	public ConnectFourGame() {
 		setGameStatus(GameStatus.NotOverYet);
-		setPlayer(Player.BLACK);
+		setPlayer(Player.BLUE);
 		board = new cfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 	}
@@ -40,14 +40,14 @@ public class ConnectFourGame {
 	}
 
 	public int selectcfCell(int row, final int col, final Player player) {
-		if (getCell(row, col).isMarked() || player != Player.NONE || getCell(row, col) == null) {
+		if (getCell(row, col) == null || getCell(row, col).isMarked()) {
 			return -1;
 		}
-		while (!getCell(row, col).isMarked() && player == Player.NONE && getCell(row, col) != null) {
+		while (getCell(row, col) != null && !getCell(row, col).isMarked()) {
 			row++;
 		}
-		board[row - 1][col].setMarked(true);
-		board[row - 1][col].setPlayer(player);
+		board[row-1][col].setMarked(true);
+		board[row-1][col].setPlayer(player);
 		if (checkStatus(player)) {
 			setGameStatus(GameStatus.Won);
 		} else {
@@ -65,10 +65,13 @@ public class ConnectFourGame {
 	private boolean checkHorizontal(final Player player) {
 		int count;
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
-			count = 0;
+			count = 1;
 			for (int col = 0; col < getDEFAULT_COL(); col++) {
-				if (getCell(row, col).getPlayer() == player) {
+				if (getCell(row, col).getPlayer() == player && getCell(row, col + 1) != null &&
+						getCell(row, col + 1).getPlayer() == player) {
 					count++;
+				} else {
+					count = 0;
 				}
 				if (count == getCONNECT_FOUR()) {
 					return true;
@@ -96,18 +99,30 @@ public class ConnectFourGame {
 
 	private boolean checkDiagonal(Player player) {
 		//TO-DO Diagonal logic
+		return false;
+	}
+	
+	public boolean checkTie() {
+		int row = 0;
+		for (int col = 0; col < getDEFAULT_COL(); col++) {
+			if (!board[row][col].isMarked()) {
+				return false;
+			}
+		}
 		return true;
 	}
 
-	private cfCell getCell(final int row, final int col) {
+	public cfCell getCell(final int row, final int col) {
 		return (row < 0 || col < 0 || row >= getDEFAULT_ROW() || col >= getDEFAULT_COL()) ? null : board[row][col];
 	}
 
-	public cfCell[][] getBoard() {
+	// probably not going to use this method
+	private cfCell[][] getBoard() {
 		return board;
 	}
 
-	public void setBoard(cfCell[][] board) {
+	// probably not going to use this method either
+	private void setBoard(cfCell[][] board) {
 		this.board = board;
 	}
 
@@ -115,7 +130,7 @@ public class ConnectFourGame {
 		return gameStatus;
 	}
 
-	public void setGameStatus(GameStatus gameStatus) {
+	private void setGameStatus(GameStatus gameStatus) {
 		this.gameStatus = gameStatus;
 	}
 
@@ -123,15 +138,16 @@ public class ConnectFourGame {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
+	private void setPlayer(Player player) {
 		this.player = player;
 	}
 
-	public int getRating() {
+	// code for AI
+	private int getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	private void setRating(int rating) {
 		this.rating = rating;
 	}
 
