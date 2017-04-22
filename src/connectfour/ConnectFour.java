@@ -39,13 +39,7 @@ public class ConnectFour {
 	private static JMenuItem menuPlayer;
 
 	/** Changes the color of the player */
-	private static JMenu menuChangePlayer;
-
-	/** Red player. */
-	private static JMenuItem menuRed;
-
-	/** Red player. */
-	private static JMenuItem menuBlue;
+	private static JMenuItem menuSwitchColors;
 
 	/** For a ConnectFourGUI that holds the buttons for the game. */
 	private static ConnectFourGUI board;
@@ -97,17 +91,11 @@ public class ConnectFour {
 					board = new ConnectFourGUI(player);
 					clearBoard();
 				}
-				if (e.getSource() == menuRed) {
+				if (e.getSource() == menuSwitchColors) {
 					if (alertMessage() == 0) {
+						Player player = selectPlayer().next();
 						frame.remove(board);
-						board = new ConnectFourGUI(Player.RED);
-						clearBoard();
-					}
-				}
-				if (e.getSource() == menuBlue) {
-					if (alertMessage() == 0) {
-						frame.remove(board);
-						board = new ConnectFourGUI(Player.BLUE);
+						board = new ConnectFourGUI(player);
 						clearBoard();
 					}
 				}
@@ -163,17 +151,9 @@ public class ConnectFour {
 		menuNewGame.add(menuPlayer);
 
 		menu.addSeparator();
-		menuChangePlayer = new JMenu("Change Player");
-		menuChangePlayer.addActionListener(new MenuActionListener());
-		menu.add(menuChangePlayer);
-
-		menuRed = new JMenuItem("Red");
-		menuRed.addActionListener(new MenuActionListener());
-		menuChangePlayer.add(menuRed);
-
-		menuBlue = new JMenuItem("Blue");
-		menuBlue.addActionListener(new MenuActionListener());
-		menuChangePlayer.add(menuBlue);
+		menuSwitchColors = new JMenuItem("Switch Color");
+		menuSwitchColors.addActionListener(new MenuActionListener());
+		menu.add(menuSwitchColors);
 
 		menu.addSeparator();
 		menuExit = new JMenuItem("Exit");
