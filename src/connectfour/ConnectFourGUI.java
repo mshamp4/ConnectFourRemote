@@ -83,6 +83,18 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		add(center, BorderLayout.CENTER);
 		createButtons();
 	}
+	
+	public ConnectFourGUI(Player player) {
+		game = new ConnectFourGame(player);
+		int row = game.getDEFAULT_ROW();
+		int col = game.getDEFAULT_COL();
+		board = new JButton[row][col];
+		setLayout(new BorderLayout());
+		center = new JPanel();
+		center.setLayout(new GridLayout(row, col));
+		add(center, BorderLayout.CENTER);
+		createButtons();
+	}
 
 	/**
 	 * Helper method that creates each individual default JButton. This
@@ -105,6 +117,10 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 			}
 		}
 	}
+	
+	public Player getInitialPlayer() {
+		return game.getStartingPlayer();
+	}
 
 	/**
 	 * Helper method that updates the board every time the user clicks on a
@@ -126,7 +142,7 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 			}
 		}
 	}
-
+	
 	@Override
 	/**
 	 * Helper method that controls what happens when the user 

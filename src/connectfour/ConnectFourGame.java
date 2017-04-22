@@ -18,6 +18,8 @@ public class ConnectFourGame {
 
 	/** Used to keep track of the current turn of the game. */
 	private Player player;
+	
+	private Player startingPlayer;
 
 	// CHECKSTYLE:OFF
 	/** Default row of a connect four board. */
@@ -41,6 +43,15 @@ public class ConnectFourGame {
 	public ConnectFourGame() {
 		setGameStatus(GameStatus.NotOverYet);
 		setPlayer(Player.BLUE);
+		setStartingPlayer(Player.BLUE);
+		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
+		initialize();
+	}
+	
+	public ConnectFourGame(Player player) {
+		setGameStatus(GameStatus.NotOverYet);
+		setPlayer(player);
+		setStartingPlayer(player);
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 	}
@@ -289,7 +300,7 @@ public class ConnectFourGame {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Getter method that gets a cell given a row and a column coordinate.
 	 * 
@@ -342,6 +353,14 @@ public class ConnectFourGame {
 	 */
 	private void setPlayer(final Player player) {
 		this.player = player;
+	}
+	
+	public Player getStartingPlayer() {
+		return startingPlayer;
+	}
+
+	public void setStartingPlayer(Player startingPlayer) {
+		this.startingPlayer = startingPlayer;
 	}
 
 //	/**
