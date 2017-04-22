@@ -123,7 +123,7 @@ public class ConnectFour {
 
 			private int alertMessage() {
 				int reply = JOptionPane.showConfirmDialog(null,
-						"Warning! A new game will be created\nif players switch colors.", "Change Players",
+						"Warning! A new game will be created\nif players switch colors.", "Change Colors",
 						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, warningIcon);
 
 				if (reply == JOptionPane.YES_OPTION) {
@@ -151,7 +151,7 @@ public class ConnectFour {
 		menuNewGame.add(menuPlayer);
 
 		menu.addSeparator();
-		menuSwitchColors = new JMenuItem("Switch Color");
+		menuSwitchColors = new JMenuItem("Switch Colors");
 		menuSwitchColors.addActionListener(new MenuActionListener());
 		menu.add(menuSwitchColors);
 
