@@ -49,7 +49,7 @@ public class ConnectFour {
 	 *            Arguments that are passed through the main method these
 	 *            aren't used
 	 */
-	public static void main(final String string) {
+	public static void main(final String[] args) {
 		board = new ConnectFourGUI();
 		frame = new JFrame("Connect Four");
 		frame.add(board);
