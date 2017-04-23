@@ -38,7 +38,7 @@ public class ConnectFour {
 	/** Switch the opponent to player. */
 	private static JMenuItem menuPlayer;
 
-	/** Changes the color of the player */
+	/** Changes the color of the player. */
 	private static JMenuItem menuSwitchColors;
 
 	/** For a ConnectFourGUI that holds the buttons for the game. */
@@ -47,15 +47,17 @@ public class ConnectFour {
 	/** A JFrame to add elements to. */
 	private static JFrame frame;
 
-	private static ImageIcon warningIcon = new ImageIcon("src/warningIcon.png");
+	/** A warning icon that is used to switch colors. */
+	private static ImageIcon warningIcon = new 
+			ImageIcon("src/warningIcon.png");
 
 	/**
 	 * Main method that creates a JFrame and adds an instance of the
 	 * ConnectFourGUI to it and sets up the rest of the game.
 	 * 
 	 * @param args
-	 *            Arguments that are passed through the main method these aren't
-	 *            used
+	 *            Arguments that are passed through the main method these
+	 *            aren't used
 	 */
 	public static void main(final String[] args) {
 		board = new ConnectFourGUI();
@@ -64,7 +66,6 @@ public class ConnectFour {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
 
 		/**
 		 * This class is used for the different menu options.
@@ -93,9 +94,11 @@ public class ConnectFour {
 				}
 				if (e.getSource() == menuSwitchColors) {
 					if (alertMessage() == 0) {
-						Player player = selectPlayer().next();
+						Player player = 
+								selectPlayer().next();
 						frame.remove(board);
-						board = new ConnectFourGUI(player);
+						board = new 
+								ConnectFourGUI(player);
 						clearBoard();
 					}
 				}
@@ -114,17 +117,36 @@ public class ConnectFour {
 				frame.setLocationRelativeTo(null);
 			}
 
+			
+			/**
+			 * This method returns the color of which player
+			 * started first.
+			 * 
+			 * @return Player Returns the color of the starting
+			 * 		   player
+			 */
 			private Player selectPlayer() {
-				if (board.getInitialPlayer() == Player.BLUE) {
-					return Player.BLUE;
+				if (board.getInitialPlayer() == Player.PLAYER1) {
+					return Player.PLAYER1;
 				}
-				return Player.RED;
+				return Player.PLAYER2;
 			}
 
+			/**
+			 * This method makes the user aware that a new game
+			 * will be created if the colors are switched.
+			 * 
+			 * @return int If the user wants to change the game
+			 */
 			private int alertMessage() {
-				int reply = JOptionPane.showConfirmDialog(null,
-						"Warning! A new game will be created\nif players switch colors.", "Change Colors",
-						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, warningIcon);
+				int reply = JOptionPane.
+						showConfirmDialog(null,
+						"Warning! A new game will be "
+						+ "created\nif players switch "
+						+ "colors.", "Change Colors",
+						JOptionPane.
+						YES_NO_OPTION, JOptionPane.
+						INFORMATION_MESSAGE, warningIcon);
 
 				if (reply == JOptionPane.YES_OPTION) {
 					return 0;

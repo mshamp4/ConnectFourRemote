@@ -19,6 +19,7 @@ public class ConnectFourGame {
 	/** Used to keep track of the current turn of the game. */
 	private Player player;
 	
+	/** Used to keep track of who starts first. */
 	private Player startingPlayer;
 
 	// CHECKSTYLE:OFF
@@ -42,13 +43,21 @@ public class ConnectFourGame {
 	 */
 	public ConnectFourGame() {
 		setGameStatus(GameStatus.NotOverYet);
-		setPlayer(Player.BLUE);
-		setStartingPlayer(Player.BLUE);
+		setPlayer(Player.PLAYER1);
+		setStartingPlayer(Player.PLAYER1);
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 	}
 	
-	public ConnectFourGame(Player player) {
+	/**
+	 * Constructor that instantiates a new game and works similarly 
+	 * to the default constructor however it sets the players
+	 * color to a value provided by the parameter.
+	 * 
+	 * 
+	 * @param player The color that the first player is going to be
+	 */
+	public ConnectFourGame(final Player player) {
 		setGameStatus(GameStatus.NotOverYet);
 		setPlayer(player);
 		setStartingPlayer(player);
@@ -355,11 +364,24 @@ public class ConnectFourGame {
 		this.player = player;
 	}
 	
+	/**
+	 * Getter method that returns what player made the 
+	 * first move.
+	 * 
+	 * @return Player Which player started first
+	 */
 	public Player getStartingPlayer() {
 		return startingPlayer;
 	}
 
-	public void setStartingPlayer(Player startingPlayer) {
+	/**
+	 * Setter method that sets which player makes the
+	 * first move of the game.
+	 * 
+	 * @param startingPlayer
+	 *            Which players turn it is
+	 */
+	public void setStartingPlayer(final Player startingPlayer) {
 		this.startingPlayer = startingPlayer;
 	}
 

@@ -84,7 +84,16 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		createButtons();
 	}
 	
-	public ConnectFourGUI(Player player) {
+	/**
+	 * Constructor that instantiates a new ConnectFourGame, and sets
+	 * up the JButtons based off of the default board size found in the
+	 * ConnectFourGame class. In addition, this also sets the players
+	 * color by changing it to the specified color and not just 
+	 * defaulting to blue.
+	 * 
+	 * @param player Which player's color starts first
+	 */
+	public ConnectFourGUI(final Player player) {
 		game = new ConnectFourGame(player);
 		int row = game.getDEFAULT_ROW();
 		int col = game.getDEFAULT_COL();
@@ -118,6 +127,13 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		}
 	}
 	
+	
+	/**
+	 * Helper method that gets which player made 
+	 * the first move of the game.
+	 * 
+	 * @return Player The player who started the game
+	 */
 	public Player getInitialPlayer() {
 		return game.getStartingPlayer();
 	}
@@ -132,11 +148,11 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
 				iCell = game.getCell(row, col);
 				if (iCell.isMarked() && iCell.getPlayer()
-						== Player.BLUE) {
+						== Player.PLAYER1) {
 					board[row][col].setIcon(blueCircle);
 				}
 				if (iCell.isMarked() && iCell.getPlayer()
-						== Player.RED) {
+						== Player.PLAYER2) {
 					board[row][col].setIcon(redCircle);
 				}
 			}
@@ -171,13 +187,13 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 		displayBoard();
 
 		if (game.getGameStatus() == GameStatus.Won && game.getPlayer()
-				== Player.BLUE) {
+				== Player.PLAYER1) {
 			JOptionPane.showMessageDialog(null, "Red Wins!", "Red",
 					JOptionPane.INFORMATION_MESSAGE,
 					redCircleMini);
 		}
 		if (game.getGameStatus() == GameStatus.Won && game.getPlayer()
-				== Player.RED) {
+				== Player.PLAYER2) {
 			JOptionPane.showMessageDialog(null, "Blue Wins!",
 					"Blue", JOptionPane.INFORMATION_MESSAGE,
 					blueCircleMini);

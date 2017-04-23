@@ -13,13 +13,13 @@ public enum Player {
 	 * Blue player.
 	 * 
 	 */
-	BLUE,
+	PLAYER1,
 	
 	/**
 	 * Red player.
 	 * 
 	 */
-	RED, 
+	PLAYER2, 
 	
 	/**
 	 * There is no owner of a particular cell.
@@ -34,6 +34,6 @@ public enum Player {
 	 * @return Player the player whose next turn it is
 	 */
 	public Player next() {
-		return this == BLUE ? RED : BLUE;
+		return this == PLAYER1 ? PLAYER2 : PLAYER1;
 	}
 }
