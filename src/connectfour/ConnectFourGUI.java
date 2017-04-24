@@ -93,8 +93,8 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	 * 
 	 * @param player Which player's color starts first
 	 */
-	public ConnectFourGUI(final Player player) {
-		game = new ConnectFourGame(player);
+	public ConnectFourGUI(final Player player, boolean enabled) {
+		game = new ConnectFourGame(player, enabled);
 		int row = game.getDEFAULT_ROW();
 		int col = game.getDEFAULT_COL();
 		board = new JButton[row][col];
@@ -137,7 +137,15 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	public Player getInitialPlayer() {
 		return game.getStartingPlayer();
 	}
+	
+	public void setAI(boolean status) {
+		game.setAiEnabled(status);
+	}
 
+	public boolean isAIEnabled() {
+		return game.isAiEnabled();
+	}
+	
 	/**
 	 * Helper method that updates the board every time the user clicks on a
 	 * JButton.
@@ -180,6 +188,14 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 						== GameStatus.NotOverYet) {
 					game.selectCfCell(row, col, 
 							game.getPlayer());
+					
+					if (game.isAiEnabled()) {
+						Move move = game.selectBestMove(game.getPlayer());
+						if (move != null) {
+							game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+						}
+					}
+					
 				}
 			}
 		}
@@ -199,7 +215,7 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 					blueCircleMini);
 		}
 		if (game.getGameStatus() == GameStatus.NotOverYet
-				&& game.checkTie()) {
+				&& game.checkTie(game.getBoard())) {
 			JOptionPane.showMessageDialog(null, "It's a tie!",
 					"Tie", JOptionPane.INFORMATION_MESSAGE,
 					exclamationPoint);

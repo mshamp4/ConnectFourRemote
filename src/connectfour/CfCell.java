@@ -17,7 +17,7 @@ public class CfCell {
 	/** Boolean to mark whether or not the cell has been selected. */
 	private boolean isMarked;
 
-//	/** An integer to represent how good of a move a cell is. */
+////	/** An integer to represent how good of a move a cell is. */
 //	private int rating;
 
 	/**

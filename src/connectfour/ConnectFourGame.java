@@ -1,5 +1,8 @@
 package connectfour;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * This class is the controller of the MVC design, it creates a fully functional
  * connect four game board and makes all decisions regarding the state of the
@@ -12,6 +15,8 @@ public class ConnectFourGame {
 
 	/** A 2D array full of connect four cells. */
 	private CfCell[][] board;
+	
+	private CfCell[][] currentState;
 
 	/** Current status of the game. */
 	private GameStatus gameStatus;
@@ -21,6 +26,8 @@ public class ConnectFourGame {
 	
 	/** Used to keep track of who starts first. */
 	private Player startingPlayer;
+	
+	private boolean aiEnabled;
 
 	// CHECKSTYLE:OFF
 	/** Default row of a connect four board. */
@@ -33,9 +40,6 @@ public class ConnectFourGame {
 	private final int CONNECT_FOUR = 4;
 	// CHECKSTYLE:ON
 	
-//	/** An integer used by the AI to represent how good a move is. */
-//	private int rating;
-
 	/**
 	 * Constructor that instantiates a new game by setting all of the
 	 * default values and by setting the first player's turn to blue.
@@ -45,8 +49,10 @@ public class ConnectFourGame {
 		setGameStatus(GameStatus.NotOverYet);
 		setPlayer(Player.PLAYER1);
 		setStartingPlayer(Player.PLAYER1);
+		setAiEnabled(true);
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
+		setCurrentState();
 	}
 	
 	/**
@@ -57,12 +63,14 @@ public class ConnectFourGame {
 	 * 
 	 * @param player The color that the first player is going to be
 	 */
-	public ConnectFourGame(final Player player) {
+	public ConnectFourGame(final Player player, boolean enabled) {
 		setGameStatus(GameStatus.NotOverYet);
 		setPlayer(player);
 		setStartingPlayer(player);
+		setAiEnabled(enabled);
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
+		setCurrentState();
 	}
 
 	/**
@@ -104,7 +112,7 @@ public class ConnectFourGame {
 		}
 		board[row - 1][col].setMarked(true);
 		board[row - 1][col].setPlayer(player);
-		if (checkStatus(row - 1, col, player)) {
+		if (checkStatus(board, row - 1, col, player, getCONNECT_FOUR())) {
 			setGameStatus(GameStatus.Won);
 		} else {
 			setGameStatus(GameStatus.NotOverYet);
@@ -112,7 +120,92 @@ public class ConnectFourGame {
 		setPlayer(player.next());
 		return 1;
 	}
-
+	
+	private void selectCfCellAI(CfCell[][] board, final int row, final int col, Player player) {
+		if (board[row][col] == null || board[row][col].isMarked()) {
+			throw new NullPointerException();
+		}
+		board[row][col].setMarked(true);
+		board[row][col].setPlayer(player);
+		if (checkStatus(board, row, col, player, getCONNECT_FOUR())) {
+			setGameStatus(GameStatus.Won);
+		} else {
+			setGameStatus(GameStatus.NotOverYet);
+		}
+		return;
+	}
+	
+	public Move selectBestMove(Player player) {
+		setCurrentState();
+		ArrayList<Move> moves = availableMoves(currentState, player);
+		Move bestMove = null;
+		
+		if (moves.size() == 0) {
+			return bestMove;
+		}
+		
+		int rating = moves.get(0).getRating();
+		
+		for (Move move : moves) {
+			if (rating > move.getRating()) {
+				rating = move.getRating();
+				bestMove = move;
+			}
+			
+			if (rating == 0) {
+				bestMove = randomMove(moves);
+			}
+		}
+		return bestMove;
+	}
+	
+	private Move randomMove(ArrayList<Move> moves) {
+		Collections.shuffle(moves);
+		return moves.get(0);
+	}
+	
+	private ArrayList<Move> availableMoves(CfCell[][] board, Player player) {
+		ArrayList<Move> moves = new ArrayList<Move>();
+		if (!checkTie(board) && getGameStatus() != GameStatus.Won) {
+			for (int col = 0; col < getDEFAULT_COL(); col++) {
+				for (int row = getDEFAULT_ROW() - 1; row >= 0; row--) {
+					if (!board[row][col].isMarked() && board[row][col].getPlayer() == Player.NONE) {
+						Move newMove = new Move(row, col, player);
+						moves.add(newMove);
+						rateMove(board, newMove, player);
+						break;
+					}
+				}
+			}
+		}
+		return moves;
+	}
+	
+	private void rateMove(CfCell[][] currentState, Move move, Player player) {
+		int score = 0;
+		
+		if (checkStatus(currentState, move.getRow(), move.getCol(), player.next(), getCONNECT_FOUR())) {
+			score = 20;
+		}
+		if (checkStatus(currentState, move.getRow(), move.getCol(), player, 3)) {
+			score = 5;
+		}
+		if (checkStatus(currentState, move.getRow(), move.getCol(), player.next(), 3)) {
+			score = 10;
+		}
+		if (checkStatus(currentState, move.getRow(), move.getCol(), player, 2)) {
+			score = 2;
+		}
+		selectCfCellAI(currentState, move.getRow(), move.getCol(), player);
+		if (getGameStatus() == GameStatus.Won && player == Player.PLAYER2) {
+			score = 15;
+		}
+		setGameStatus(GameStatus.NotOverYet);
+		currentState[move.getRow()][move.getCol()].setMarked(false);
+		currentState[move.getRow()][move.getCol()].setPlayer(Player.NONE);
+		move.setRating(score);
+	}
+	
 	/**
 	 * Helper method that checks the game board every time a new cell is
 	 * added. This method checks for all of the win conditions including
@@ -126,11 +219,11 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	public boolean checkStatus(final int row, final int col, final 
-			Player player) {
-		return (checkHorizontal(row, player)
-				|| checkVertical(col, player)
-				|| checkDiagonal(row, col, player));
+	public boolean checkStatus(CfCell[][] board, final int row, final int col, final 
+			Player player, final int target) {
+		return (checkHorizontal(board, row, player, target)
+				|| checkVertical(board, col, player, target)
+				|| checkDiagonal(board, row, col, player, target));
 	}
 
 	/**
@@ -144,15 +237,15 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkHorizontal(final int row, final Player player) {
+	private boolean checkHorizontal(CfCell[][] board, final int row, final Player player, final int target) {
 		int count = 0;
 		for (int col = 0; col < getDEFAULT_COL(); col++) {
-			if (getCell(row, col).getPlayer() == player) {
+			if (board[row][col].getPlayer() == player) {
 				count++;
 			} else {
 				count = 0;
 			}
-			if (count == getCONNECT_FOUR()) {
+			if (count == target) {
 				return true;
 			}
 		}
@@ -170,15 +263,15 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkVertical(final int col, final Player player) {
+	private boolean checkVertical(CfCell[][] board, final int col, final Player player, final int target) {
 		int count = 0;
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
-			if (getCell(row, col).getPlayer() == player) {
+			if (board[row][col].getPlayer() == player) {
 				count++;
 			} else {
 				count = 0;
 			}
-			if (count == getCONNECT_FOUR()) {
+			if (count == target) {
 				return true;
 			}
 		}
@@ -199,10 +292,10 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkDiagonal(final int row, final int col,
-			final Player player) {
-		return (checkForwardDiagonal(row, col, player)
-				|| checkBackwardDiagonal(row, col, player));
+	private boolean checkDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player, final int target) {
+		return (checkForwardDiagonal(board, row, col, player, target)
+				|| checkBackwardDiagonal(board, row, col, player, target));
 	}
 
 	/**
@@ -219,30 +312,30 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkForwardDiagonal(final int row, final int col,
-			final Player player) {
+	private boolean checkForwardDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player, final int target) {
 		int forwardCount = 0;
 		int rUpValue = row;
 		int cUpValue = col;
 		int rDownValue = row + 1;
 		int cDownValue = col - 1;
-		while (getCell(rUpValue, cUpValue) != null
-				&& getCell(rUpValue, cUpValue).getPlayer() 
+		while (getCell(board, rUpValue, cUpValue) != null
+				&& getCell(board, rUpValue, cUpValue).getPlayer() 
 				== player) {
 			forwardCount++;
 			rUpValue--;
 			cUpValue++;
-			if (forwardCount == getCONNECT_FOUR()) {
+			if (forwardCount == target) {
 				return true;
 			}
 		}
-		while (getCell(rDownValue, cDownValue) != null
-				&& getCell(rDownValue, cDownValue).getPlayer() 
+		while (getCell(board, rDownValue, cDownValue) != null
+				&& getCell(board, rDownValue, cDownValue).getPlayer() 
 				== player) {
 			forwardCount++;
 			rDownValue++;
 			cDownValue--;
-			if (forwardCount == getCONNECT_FOUR()) {
+			if (forwardCount == target) {
 				return true;
 			}
 		}
@@ -263,30 +356,30 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	private boolean checkBackwardDiagonal(final int row, final int col,
-			final Player player) {
+	private boolean checkBackwardDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player, final int target) {
 		int backwardCount = 0;
 		int rUpValue = row;
 		int cUpValue = col;
 		int rDownValue = row + 1;
 		int cDownValue = col + 1;
-		while (getCell(rUpValue, cUpValue) != null
-				&& getCell(rUpValue, cUpValue).getPlayer() 
+		while (getCell(board, rUpValue, cUpValue) != null
+				&& getCell(board, rUpValue, cUpValue).getPlayer() 
 				== player) {
 			backwardCount++;
 			rUpValue--;
 			cUpValue--;
-			if (backwardCount == getCONNECT_FOUR()) {
+			if (backwardCount == target) {
 				return true;
 			}
 		}
-		while (getCell(rDownValue, cDownValue) != null
-				&& getCell(rDownValue, cDownValue).getPlayer()
+		while (getCell(board, rDownValue, cDownValue) != null
+				&& getCell(board, rDownValue, cDownValue).getPlayer()
 				== player) {
 			backwardCount++;
 			rDownValue++;
 			cDownValue++;
-			if (backwardCount == getCONNECT_FOUR()) {
+			if (backwardCount == target) {
 				return true;
 			}
 		}
@@ -300,10 +393,10 @@ public class ConnectFourGame {
 	 * 
 	 * @return boolean Checks to see if there is a tie or not
 	 */
-	public boolean checkTie() {
+	public boolean checkTie(final CfCell[][] board) {
 		int row = 0;
 		for (int col = 0; col < getDEFAULT_COL(); col++) {
-			if (!board[row][col].isMarked()) {
+			if (getCell(board, row, col) != null && !board[row][col].isMarked()) {
 				return false;
 			}
 		}
@@ -320,10 +413,42 @@ public class ConnectFourGame {
 	 * @return CfCell Returns the CfCell if it is valid and does not exceed
 	 * 		   the bounds of the game board.
 	 */
+	public CfCell getCell(CfCell board[][], final int row, final int col) {
+		return (row < 0 || col < 0 || row >= getDEFAULT_ROW()
+				|| col >= getDEFAULT_COL())
+				? null : board[row][col];
+	}
+	
 	public CfCell getCell(final int row, final int col) {
 		return (row < 0 || col < 0 || row >= getDEFAULT_ROW()
 				|| col >= getDEFAULT_COL())
 				? null : board[row][col];
+	}
+	
+	public CfCell[][] getBoard() {
+		return board;
+	}
+	
+	public CfCell[][] getCurrentState() {
+		return currentState;
+	}
+
+	public void setCurrentState() {
+		currentState = new CfCell[DEFAULT_ROW][DEFAULT_COL];
+		for (int row = 0; row < getDEFAULT_ROW(); row++) {
+			for (int col = 0; col < getDEFAULT_COL(); col++) {
+				if (getCell(row, col) != null) {
+					CfCell temp = getCell(row, col);
+					if (temp.isMarked()) {
+						currentState[row][col] = new CfCell();
+						currentState[row][col].setPlayer(temp.getPlayer());
+						currentState[row][col].setMarked(true);
+					} else {
+						currentState[row][col] = new CfCell();
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -384,25 +509,14 @@ public class ConnectFourGame {
 	public void setStartingPlayer(final Player startingPlayer) {
 		this.startingPlayer = startingPlayer;
 	}
+	
+	public boolean isAiEnabled() {
+		return aiEnabled;
+	}
 
-//	/**
-//	 * Getter method that gets the rating of a particular game cell.
-//	 * 
-//	 * @return int The rating of the current cell being requested
-//	 */
-//	private int getRating() {
-//		return rating;
-//	}
-//
-//	/**
-//	 * Setter method that sets the rating of a particular game cell.
-//	 * 
-//	 * @param rating
-//	 *            The rating of the cell
-//	 */
-//	private void setRating(final int rating) {
-//		this.rating = rating;
-//	}
+	public void setAiEnabled(boolean aiEnabled) {
+		this.aiEnabled = aiEnabled;
+	}
 
 	// CHECKSTYLE:OFF
 	/**

@@ -83,22 +83,20 @@ public class ConnectFour {
 				if (e.getSource() == menuPlayer) {
 					Player player = selectPlayer();
 					frame.remove(board);
-					board = new ConnectFourGUI(player);
+					board = new ConnectFourGUI(player, false);
 					clearBoard();
 				}
 				if (e.getSource() == menuAI) {
 					Player player = selectPlayer();
 					frame.remove(board);
-					board = new ConnectFourGUI(player);
+					board = new ConnectFourGUI(player, true);
 					clearBoard();
 				}
 				if (e.getSource() == menuSwitchColors) {
 					if (alertMessage() == 0) {
-						Player player = 
-								selectPlayer().next();
+						Player player = selectPlayer().next();
 						frame.remove(board);
-						board = new 
-								ConnectFourGUI(player);
+						board = new ConnectFourGUI(player, getAIStatus());
 						clearBoard();
 					}
 				}
@@ -126,10 +124,15 @@ public class ConnectFour {
 			 * 		   player
 			 */
 			private Player selectPlayer() {
-				if (board.getInitialPlayer() == Player.PLAYER1) {
+				if (board.getInitialPlayer() 
+						== Player.PLAYER1) {
 					return Player.PLAYER1;
 				}
 				return Player.PLAYER2;
+			}
+			
+			private boolean getAIStatus() {
+				return board.isAIEnabled();
 			}
 
 			/**
@@ -146,7 +149,8 @@ public class ConnectFour {
 						+ "colors.", "Change Colors",
 						JOptionPane.
 						YES_NO_OPTION, JOptionPane.
-						INFORMATION_MESSAGE, warningIcon);
+						INFORMATION_MESSAGE,
+						warningIcon);
 
 				if (reply == JOptionPane.YES_OPTION) {
 					return 0;
@@ -166,7 +170,6 @@ public class ConnectFour {
 		menuAI = new JMenuItem("AI");
 		menuAI.addActionListener(new MenuActionListener());
 		menuNewGame.add(menuAI);
-		menuAI.setEnabled(false);
 
 		menuPlayer = new JMenuItem("Player");
 		menuPlayer.addActionListener(new MenuActionListener());
