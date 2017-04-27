@@ -135,6 +135,36 @@ public class ConnectFourGame {
 		return;
 	}
 	
+	private void makeMove(CfCell[][] board, final int row, final int col, Player player) {
+		if (board[row][col] == null) {
+			throw new NullPointerException();
+		}
+		board[row][col].setMarked(true);
+		board[row][col].setPlayer(player);
+	}
+	
+	private void undoMove(CfCell[][] board, final int row, final int col, Player player) {
+		if (board[row][col] == null) {
+			throw new NullPointerException();
+		}
+		board[row][col].setMarked(false);
+		board[row][col].setPlayer(Player.NONE);
+	}
+	
+	public int miniMax(CfCell[][] board, Player player, ArrayList<Move> availableMoves) {
+		if (availableMoves == null || availableMoves.size() == 0) {
+			return 0;
+		}
+		
+		for (Move move : availableMoves) {
+			selectCfCellAI(board, move.getRow(), move.getCol(), player);
+			if (player == Player.PLAYER2 || checkStatus(board, move.getRow(), move.getCol(), player)) {
+				
+			}
+		}
+		return miniMax(board, player.next(), availableMoves(board, player.next()));
+	}
+	
 	public Move selectBestMove(Player player) {
 		setCurrentState();
 		ArrayList<Move> moves = availableMoves(currentState, player);
@@ -183,7 +213,7 @@ public class ConnectFourGame {
 	
 	private void rateMove(CfCell[][] currentState, Move move, Player player) {
 		int score = 0;
-		
+	
 		if (checkStatus(currentState, move.getRow(), move.getCol(), player.next(), getCONNECT_FOUR())) {
 			score = 20;
 		}
@@ -225,6 +255,13 @@ public class ConnectFourGame {
 				|| checkVertical(board, col, player, target)
 				|| checkDiagonal(board, row, col, player, target));
 	}
+	
+	public boolean checkStatus(CfCell[][] board, final int row, final int col, final 
+			Player player) {
+		return (checkHorizontal(board, row, player)
+				|| checkVertical(board, col, player)
+				|| checkDiagonal(board, row, col, player));
+	}
 
 	/**
 	 * Helper method that checks how many consecutive cells of a single
@@ -246,6 +283,21 @@ public class ConnectFourGame {
 				count = 0;
 			}
 			if (count == target) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean checkHorizontal(CfCell[][] board, final int row, final Player player) {
+		int count = 0;
+		for (int col = 0; col < getDEFAULT_COL(); col++) {
+			if (board[row][col].getPlayer() == player) {
+				count++;
+			} else {
+				count = 0;
+			}
+			if (count == getCONNECT_FOUR()) {
 				return true;
 			}
 		}
@@ -277,6 +329,21 @@ public class ConnectFourGame {
 		}
 		return false;
 	}
+	
+	private boolean checkVertical(CfCell[][] board, final int col, final Player player) {
+		int count = 0;
+		for (int row = 0; row < getDEFAULT_ROW(); row++) {
+			if (board[row][col].getPlayer() == player) {
+				count++;
+			} else {
+				count = 0;
+			}
+			if (count == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Helper method that checks the diagonals of a connect four game board.
@@ -297,6 +364,12 @@ public class ConnectFourGame {
 		return (checkForwardDiagonal(board, row, col, player, target)
 				|| checkBackwardDiagonal(board, row, col, player, target));
 	}
+	
+	private boolean checkDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player) {
+		return (checkForwardDiagonal(board, row, col, player)
+				|| checkBackwardDiagonal(board, row, col, player));
+	}
 
 	/**
 	 * Helper method that contains the logic to find how many consecutive
@@ -313,7 +386,7 @@ public class ConnectFourGame {
 	 * @return boolean Checks to see if there is a winner or not
 	 */
 	private boolean checkForwardDiagonal(CfCell[][] board, final int row, final int col,
-			final Player player, final int target) {
+			final Player player, int target) {
 		int forwardCount = 0;
 		int rUpValue = row;
 		int cUpValue = col;
@@ -336,6 +409,36 @@ public class ConnectFourGame {
 			rDownValue++;
 			cDownValue--;
 			if (forwardCount == target) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean checkForwardDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player) {
+		int forwardCount = 0;
+		int rUpValue = row;
+		int cUpValue = col;
+		int rDownValue = row + 1;
+		int cDownValue = col - 1;
+		while (getCell(board, rUpValue, cUpValue) != null
+				&& getCell(board, rUpValue, cUpValue).getPlayer() 
+				== player) {
+			forwardCount++;
+			rUpValue--;
+			cUpValue++;
+			if (forwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		while (getCell(board, rDownValue, cDownValue) != null
+				&& getCell(board, rDownValue, cDownValue).getPlayer() 
+				== player) {
+			forwardCount++;
+			rDownValue++;
+			cDownValue--;
+			if (forwardCount == getCONNECT_FOUR()) {
 				return true;
 			}
 		}
@@ -380,6 +483,36 @@ public class ConnectFourGame {
 			rDownValue++;
 			cDownValue++;
 			if (backwardCount == target) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean checkBackwardDiagonal(CfCell[][] board, final int row, final int col,
+			final Player player) {
+		int backwardCount = 0;
+		int rUpValue = row;
+		int cUpValue = col;
+		int rDownValue = row + 1;
+		int cDownValue = col + 1;
+		while (getCell(board, rUpValue, cUpValue) != null
+				&& getCell(board, rUpValue, cUpValue).getPlayer() 
+				== player) {
+			backwardCount++;
+			rUpValue--;
+			cUpValue--;
+			if (backwardCount == getCONNECT_FOUR()) {
+				return true;
+			}
+		}
+		while (getCell(board, rDownValue, cDownValue) != null
+				&& getCell(board, rDownValue, cDownValue).getPlayer()
+				== player) {
+			backwardCount++;
+			rDownValue++;
+			cDownValue++;
+			if (backwardCount == getCONNECT_FOUR()) {
 				return true;
 			}
 		}
@@ -433,6 +566,7 @@ public class ConnectFourGame {
 		return currentState;
 	}
 
+	// possibly get the state of the board and return a board?
 	public void setCurrentState() {
 		currentState = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
@@ -449,6 +583,25 @@ public class ConnectFourGame {
 				}
 			}
 		}
+	}
+	
+	public CfCell[][] getCurrentState(CfCell[][] currentState) {
+		CfCell[][] newState = new CfCell[DEFAULT_ROW][DEFAULT_COL];
+		for (int row = 0; row < getDEFAULT_ROW(); row++) {
+			for (int col = 0; col < getDEFAULT_COL(); col++) {
+				if (getCell(row, col) != null) {
+					CfCell temp = getCell(currentState, row, col);
+					if (temp.isMarked()) {
+						newState[row][col] = new CfCell();
+						newState[row][col].setPlayer(temp.getPlayer());
+						newState[row][col].setMarked(true);
+					} else {
+						newState[row][col] = new CfCell();
+					}
+				}
+			}
+		}
+		return newState;
 	}
 
 	/**
