@@ -139,6 +139,7 @@ public class ConnectFourGame {
 	
 	public Move miniMax(CfCell[][] board, Player player) {
 		ArrayList<Move> availableMoves = availableMoves(board, player);
+		ArrayList<Move> bestMoves = new ArrayList<Move>();
 		Move bestMove = null;
 		
 		if (availableMoves == null || availableMoves.size() == 0) {
@@ -151,10 +152,12 @@ public class ConnectFourGame {
 			if (player == Player.PLAYER1 && move.getRating() <= rating) {
 				rating = move.getRating();
 				bestMove = move;
+				bestMoves.add(move);
 			}
 			if (player == Player.PLAYER2 && move.getRating() >= rating) {
 				rating = move.getRating();
 				bestMove = move;
+				bestMoves.add(move);
 			}
 			if (rating == 10) {
 				return bestMove;
@@ -163,9 +166,36 @@ public class ConnectFourGame {
 			if (rating == 0 && !checkTie(board)) {
 				return miniMax(getCurrentState(board), player.next());
 			}
-			undoMove(board, bestMove.getRow(), bestMove.getCol(), player);
+//			undoMove(board, bestMove.getRow(), bestMove.getCol(), player);
 		}
-		return bestMove;
+		if (player == Player.PLAYER1) {
+			return min(bestMoves);
+		}
+		return max(bestMoves);
+	}
+	
+	public Move max(ArrayList<Move> availableMoves) {
+		Move maxMove = availableMoves.get(0);
+		int rating = availableMoves.get(0).getRating();
+		for (Move move : availableMoves) {
+			if (move.getRating() < rating) {
+				rating = move.getRating();
+				maxMove = move;
+			}
+		}
+		return maxMove;
+	}
+	
+	public Move min(ArrayList<Move> availableMoves) {
+		Move minMove = availableMoves.get(0);
+		int rating = availableMoves.get(0).getRating();
+		for (Move move : availableMoves) {
+			if (move.getRating() > rating) {
+				rating = move.getRating();
+				minMove = move;
+			}
+		}
+		return minMove;
 	}
 	
 	public Move generateRandomMove(CfCell board[][], Player player) {
@@ -426,6 +456,7 @@ public class ConnectFourGame {
 				? null : board[row][col];
 	}
 	
+	// probably dont need two getCell methods, just convert other instances of this class to the one above
 	public CfCell getCell(final int row, final int col) {
 		return (row < 0 || col < 0 || row >= getDEFAULT_ROW()
 				|| col >= getDEFAULT_COL())
