@@ -189,10 +189,21 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 					game.selectCfCell(row, col, 
 							game.getPlayer());
 					
-					if (game.isAiEnabled()) {
-						Move move = game.selectBestMove(game.getPlayer());
-						if (move != null) {
-							game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+					if (game.isAiEnabled() && game.getPlayer() == Player.PLAYER2) {
+//						Move move = game.selectBestMove(game.getPlayer());
+//						if (move != null) {
+//							game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+//						}
+						if (game.getAiRandomMove()) {
+							Move move = game.generateRandomMove(game.getCurrentState(game.getBoard()), game.getPlayer());
+							if (move != null) {
+								game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+							}
+						} else {
+							Move move = game.miniMax(game.getCurrentState(game.getBoard()), game.getPlayer());
+							if (move != null) {
+								game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+							}
 						}
 					}
 					
