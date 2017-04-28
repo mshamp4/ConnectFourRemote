@@ -25,6 +25,8 @@ public class ConnectFourGame {
 	/** Used to keep track of who starts first. */
 	private Player startingPlayer;
 	
+	private boolean firstMove;
+	
 	private boolean aiEnabled;
 	
 	private int aiRandomMove;
@@ -53,6 +55,7 @@ public class ConnectFourGame {
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 		setAiRandomMove(0);
+		setFirstMove(true);
 	}
 	
 	/**
@@ -71,6 +74,7 @@ public class ConnectFourGame {
 		board = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		initialize();
 		setAiRandomMove(0);
+		setFirstMove(true);
 	}
 
 	/**
@@ -102,11 +106,11 @@ public class ConnectFourGame {
 	 * @return int Whether or not the move that is being made is valid or
 	 * 			   not
 	 */
-	public int selectCfCell(int row, final int col, final Player player) {
-		if (getCell(row, col) == null || getCell(row, col).isMarked()) {
+	public int selectMove(int row, final int col, final Player player) {
+		if (getCell(getBoard(), row, col) == null || getCell(getBoard(), row, col).isMarked()) {
 			return -1;
 		}
-		while (getCell(row, col) != null && !getCell(row, col).
+		while (getCell(getBoard(), row, col) != null && !getCell(getBoard(), row, col).
 				isMarked()) {
 			row++;
 		}
@@ -129,7 +133,7 @@ public class ConnectFourGame {
 		board[row][col].setPlayer(player);
 	}
 	
-	private void undoMove(CfCell[][] board, final int row, final int col, Player player) {
+	private void undoMove(CfCell[][] board, final int row, final int col) {
 		if (board[row][col] == null) {
 			throw new NullPointerException();
 		}
@@ -146,31 +150,20 @@ public class ConnectFourGame {
 			return bestMove;
 		}
 		
-//		int rating = availableMoves.get(0).getRating();
-		int rating = 0;
-		for (Move move : availableMoves) {
-			if (player == Player.PLAYER1 && move.getRating() <= rating) {
-				rating = move.getRating();
-				bestMove = move;
-				bestMoves.add(move);
-			}
-			if (player == Player.PLAYER2 && move.getRating() >= rating) {
-				rating = move.getRating();
-				bestMove = move;
-				bestMoves.add(move);
-			}
-			if (rating == 10) {
-				return bestMove;
-			}
-			makeMove(board, bestMove.getRow(), bestMove.getCol(), player);
-			if (rating == 0 && !checkTie(board)) {
-				return miniMax(getCurrentState(board), player.next());
-			}
-//			undoMove(board, bestMove.getRow(), bestMove.getCol(), player);
-		}
 		if (player == Player.PLAYER1) {
-			return min(bestMoves);
+			bestMove = min(availableMoves);
+			bestMoves.add(bestMove);
+		} else {
+			bestMove = max(availableMoves);
+			bestMoves.add(bestMove);
 		}
+	
+		makeMove(board, bestMove.getRow(), bestMove.getCol(), player);
+		
+		if (bestMove.getRating() == 0 && !checkTie(board)) {
+			return miniMax(board, player.next());
+		}
+//		undoMove(board, bestMove.getRow(), bestMove.getCol());
 		return max(bestMoves);
 	}
 	
@@ -178,7 +171,7 @@ public class ConnectFourGame {
 		Move maxMove = availableMoves.get(0);
 		int rating = availableMoves.get(0).getRating();
 		for (Move move : availableMoves) {
-			if (move.getRating() < rating) {
+			if (move.getRating() >= rating) {
 				rating = move.getRating();
 				maxMove = move;
 			}
@@ -190,7 +183,7 @@ public class ConnectFourGame {
 		Move minMove = availableMoves.get(0);
 		int rating = availableMoves.get(0).getRating();
 		for (Move move : availableMoves) {
-			if (move.getRating() > rating) {
+			if (move.getRating() <= rating) {
 				rating = move.getRating();
 				minMove = move;
 			}
@@ -199,10 +192,24 @@ public class ConnectFourGame {
 	}
 	
 	public Move generateRandomMove(CfCell board[][], Player player) {
-		ArrayList<Move> availableMoves = availableMoves(board, player);
-		if (board == null || availableMoves.size() == 0) {
+		if (getCell(board, (getDEFAULT_ROW() - 1), (getDEFAULT_COL() / 2)) != null && !board[getDEFAULT_ROW() - 1][getDEFAULT_COL() / 2].isMarked()) {
+			Move centerMove = new Move (getDEFAULT_ROW() - 1, (getDEFAULT_COL() / 2), player);
+			setAiRandomMove(1);
+			return centerMove;
+		}
+		
+		ArrayList<Move> availableMoves = new ArrayList<Move>();
+		if (firstMove) {
+			availableMoves = generateBlock(board, player);
+			setFirstMove(false);
+		} else {
+			availableMoves = availableMoves(board, player); 
+		}
+		
+		if (availableMoves.size() == 0) {
 			return null;
 		}
+		
 		setAiRandomMove(1);
 		return randomMove(availableMoves);
 	}
@@ -210,6 +217,31 @@ public class ConnectFourGame {
 	private Move randomMove(ArrayList<Move> moves) {
 		Collections.shuffle(moves);
 		return moves.get(0);
+	}
+	
+	private ArrayList<Move> generateBlock(CfCell board[][], Player player) {
+		ArrayList<Move> blockMoves = new ArrayList<Move>();
+		if (!checkTie(board) && getGameStatus() != GameStatus.Won) {
+			for (int row = getDEFAULT_ROW() - 1; row >= getDEFAULT_ROW() - 1; row--) {
+				for (int col = 0; col < getDEFAULT_COL(); col++) {
+					if (board[row][col].isMarked() && board[row][col].getPlayer() == player.next()) {
+						if (getCell(board, row, col - 1) != null && !board[row][col - 1].isMarked()) {
+							Move left = new Move(row, col - 1, player);
+							blockMoves.add(left);
+						}
+						if (getCell(board, row, col + 1) != null && !board[row][col + 1].isMarked()) {
+							Move right = new Move(row, col + 1, player);
+							blockMoves.add(right);
+						}
+						if (getCell(board, row - 1, col) != null && !board[row - 1][col].isMarked()) {
+							Move up = new Move(row - 1, col, player);
+							blockMoves.add(up);
+						}
+					}
+				}
+			}
+		}
+		return blockMoves;
 	}
 	
 	private ArrayList<Move> availableMoves(CfCell[][] board, Player player) {
@@ -239,7 +271,7 @@ public class ConnectFourGame {
 				score = 10;
 			}
 		}
-		undoMove(currentState, move.getRow(), move.getCol(), player);
+		undoMove(currentState, move.getRow(), move.getCol());
 		move.setRating(score);
 	}
 	
@@ -456,13 +488,6 @@ public class ConnectFourGame {
 				? null : board[row][col];
 	}
 	
-	// probably dont need two getCell methods, just convert other instances of this class to the one above
-	public CfCell getCell(final int row, final int col) {
-		return (row < 0 || col < 0 || row >= getDEFAULT_ROW()
-				|| col >= getDEFAULT_COL())
-				? null : board[row][col];
-	}
-	
 	public CfCell[][] getBoard() {
 		return board;
 	}
@@ -471,7 +496,7 @@ public class ConnectFourGame {
 		CfCell[][] newState = new CfCell[DEFAULT_ROW][DEFAULT_COL];
 		for (int row = 0; row < getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < getDEFAULT_COL(); col++) {
-				if (getCell(row, col) != null) {
+				if (getCell(getBoard(), row, col) != null) {
 					CfCell temp = getCell(currentState, row, col);
 					if (temp.isMarked()) {
 						newState[row][col] = new CfCell();
@@ -545,6 +570,14 @@ public class ConnectFourGame {
 		this.startingPlayer = startingPlayer;
 	}
 	
+	public boolean isFirstMove() {
+		return firstMove;
+	}
+
+	public void setFirstMove(boolean firstMove) {
+		this.firstMove = firstMove;
+	}
+	
 	public boolean isAiEnabled() {
 		return aiEnabled;
 	}
@@ -554,7 +587,7 @@ public class ConnectFourGame {
 	}
 	
 	public boolean getAiRandomMove() {
-		return (aiRandomMove <= 2);
+		return (aiRandomMove < 2);
 	}
 
 	public void setAiRandomMove(int aiRandomMove) {

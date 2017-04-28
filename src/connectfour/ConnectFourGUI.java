@@ -154,7 +154,7 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 	private void displayBoard() {
 		for (int row = 0; row < game.getDEFAULT_ROW(); row++) {
 			for (int col = 0; col < game.getDEFAULT_COL(); col++) {
-				iCell = game.getCell(row, col);
+				iCell = game.getCell(game.getBoard(), row, col);
 				if (iCell.isMarked() && iCell.getPlayer()
 						== Player.PLAYER1) {
 					board[row][col].setIcon(blueCircle);
@@ -186,23 +186,19 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 				if (e.getSource() == board[row][col]
 						&& game.getGameStatus()
 						== GameStatus.NotOverYet) {
-					game.selectCfCell(row, col, 
+					game.selectMove(row, col, 
 							game.getPlayer());
 					
 					if (game.isAiEnabled() && game.getPlayer() == Player.PLAYER2) {
-//						Move move = game.selectBestMove(game.getPlayer());
-//						if (move != null) {
-//							game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
-//						}
 						if (game.getAiRandomMove()) {
-							Move move = game.generateRandomMove(game.getCurrentState(game.getBoard()), game.getPlayer());
+							Move move = game.generateRandomMove(game.getBoard(), game.getPlayer());
 							if (move != null) {
-								game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+								game.selectMove(move.getRow(), move.getCol(), game.getPlayer());
 							}
 						} else {
 							Move move = game.miniMax(game.getCurrentState(game.getBoard()), game.getPlayer());
 							if (move != null) {
-								game.selectCfCell(move.getRow(), move.getCol(), game.getPlayer());
+								game.selectMove(move.getRow(), move.getCol(), game.getPlayer());
 							}
 						}
 					}
