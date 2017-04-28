@@ -152,16 +152,27 @@ public class ConnectFourGame {
 		
 		if (player == Player.PLAYER1) {
 			bestMove = min(availableMoves);
-			bestMoves.add(bestMove);
-		} else {
+			if (bestMove.getRating() == -10) {
+				bestMoves.add(bestMove);
+			}
+		} 
+		
+		if (player == Player.PLAYER2) {
 			bestMove = max(availableMoves);
-			bestMoves.add(bestMove);
+			if (bestMove.getRating() == 10) {
+				bestMoves.add(bestMove);
+			}
 		}
 	
 		makeMove(board, bestMove.getRow(), bestMove.getCol(), player);
 		
+		if (bestMove.getRating() == 0 && checkTie(board)) {
+			bestMoves.add(bestMove);
+		}
+		
 		if (bestMove.getRating() == 0 && !checkTie(board)) {
-			return miniMax(board, player.next());
+//			bestMoves.add(miniMax(board, player.next()));
+			bestMoves.add(miniMax(board, player.next()));
 		}
 //		undoMove(board, bestMove.getRow(), bestMove.getCol());
 		return max(bestMoves);
@@ -204,6 +215,8 @@ public class ConnectFourGame {
 			setFirstMove(false);
 		} else {
 			availableMoves = availableMoves(board, player); 
+			availableMoves.remove(availableMoves.size() - 1);
+			availableMoves.remove(0);
 		}
 		
 		if (availableMoves.size() == 0) {
@@ -288,7 +301,7 @@ public class ConnectFourGame {
 	 *            Who the current player is
 	 * @return boolean Checks to see if there is a winner or not
 	 */
-	public boolean checkStatus(CfCell[][] board, final int row, final int col, final 
+	private boolean checkStatus(CfCell[][] board, final int row, final int col, final 
 			Player player) {
 		return (checkHorizontal(board, row, player)
 				|| checkVertical(board, col, player)
@@ -590,7 +603,7 @@ public class ConnectFourGame {
 		return (aiRandomMove < 2);
 	}
 
-	public void setAiRandomMove(int aiRandomMove) {
+	private void setAiRandomMove(int aiRandomMove) {
 		this.aiRandomMove += aiRandomMove;
 	}
 

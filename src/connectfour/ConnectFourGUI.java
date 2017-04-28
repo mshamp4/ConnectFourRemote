@@ -202,7 +202,6 @@ public class ConnectFourGUI extends JPanel implements ActionListener {
 							}
 						}
 					}
-					
 				}
 			}
 		}
